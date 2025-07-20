@@ -1,13 +1,10 @@
 <% layout("/layouts/boilerplate") %>
-<body>
 
-  
-  
+<body>
   <% function slugify(name) {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   } %>
 
- <!-- Categories Grid -->
   <div class="container mb-5 my-4 landing-container">
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
       <% categories.forEach(category => { %>
@@ -18,7 +15,7 @@
               <img src="/images/<%= slugify(category.name) %>.jpg"
                    alt="<%= category.name %> image"
                    onerror="this.onerror=null; this.src='/images/default.jpg';"
-                   class="mb-3 category-image"/>
+                   class="mb-3 category-image" />
               <!-- Title & Description -->
               <h5 class="card-title"><%= category.name %></h5>
               <p class="card-text text-muted" style="font-size: 14px;"><%= category.description %></p>
@@ -31,4 +28,3 @@
     </div>
   </div>
 </body>
-</html>

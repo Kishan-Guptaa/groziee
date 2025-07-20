@@ -9,13 +9,6 @@ const app = express();
 
 // ✅ Models
 const Category = require("./models/category");
-// const Product = require("./models/product");
-// const User = require("./models/user");
-// const Admin = require("./models/admin");
-// const Cart = require("./models/cart");
-// const Order = require("./models/order");
-// const Review = require("./models/review");
-// const Wishlist = require("./models/wishlist");
 
 // ✅ Routes
 const categoryRoutes = require('./routes/category');
@@ -25,7 +18,7 @@ const productRoutes = require("./routes/product");
 const cartRoutes = require('./routes/cartRoutes');
 
 // ✅ MongoDB Connection
-const MONGO_URL = process.env.MONGO_URL ;
+const MONGO_URL = process.env.MONGO_URL;
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -41,18 +34,18 @@ app.set("views", path.join(__dirname, "views"));
 // ✅ Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
-app.set('views', './views');
 
+// ✅ Static Folder (serve everything inside /public)
+app.use(express.static(path.join(__dirname, "public")));
+
+// ✅ Session Setup
 app.use(session({
   secret: process.env.SESSION_SECRET || "supersecretkey",
   resave: false,
   saveUninitialized: false
 }));
 
-// ✅ Global user/admin for all views
+// ✅ Global user/admin access
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.admin = req.session.admin || null;
@@ -64,7 +57,7 @@ app.use('/category', categoryRoutes);
 app.use('/user', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/product', productRoutes);
-app.use('/', cartRoutes); // Handles /cart and related
+app.use('/', cartRoutes); // Handles /cart
 
 // ✅ Home route
 app.get("/", async (req, res) => {
@@ -77,16 +70,16 @@ app.get("/", async (req, res) => {
   }
 });
 
-// ✅ File upload static access
+// ✅ Uploads (if any)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ✅ 404 fallback (keep at the end)
+// ✅ 404 Page
 app.use((req, res) => {
   res.status(404).send("Page not found");
 });
 
-// ✅ Start server
-const PORT = process.env.PORT ;
+// ✅ Start Server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
