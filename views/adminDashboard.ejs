@@ -1,0 +1,52 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+  <div class="dashboard-container">
+
+    <!-- Section 1: Admin's Own Products -->
+    <h3 class="section-heading hover-underline">Your Products:</h3>
+    <div class="product-grid">
+      <% products.forEach(p => { %>
+        <div class="product-card">
+          <img src="<%= p.imageUrl || '/images/default.jpg' %>" alt="Product Image" class="product-img">
+          <div class="product-details">
+            <h4><%= p.title %></h4>
+            <p><strong>Price:</strong> ₹<%= p.price %></p>
+            <% if (p.discountPrice) { %>
+              <p><strong>Discount Price:</strong> ₹<%= p.discountPrice %></p>
+            <% } %>
+            <p><strong>Category:</strong> <%= p.category?.name || 'N/A' %></p>
+            <p><strong>Quantity:</strong> <%= p.quantity %></p>
+            <p><strong>Seller:</strong> <%= p.sellerName %> — <%= p.sellerAddress %></p>
+            <p><strong>Manufactured:</strong> <%= p.manufactureDate?.toDateString() || 'N/A' %></p>
+            <p><strong>Expiry:</strong> <%= p.expiryDate?.toDateString() || 'N/A' %></p>
+            <p><strong>Disclaimer:</strong> <%= p.disclaimer %></p>
+            <p><strong>Description:</strong> <%= p.description %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- Section 2: Payment Confirmation Screenshots -->
+    <h3 class="section-heading hover-underline mt-5">Payment Confirmations:</h3>
+    <div class="confirmation-grid">
+      <% carts.forEach(cart => { %>
+        <% if (cart.paymentScreenshot) { %>
+          <div class="confirmation-card">
+            <div class="confirmation-info">
+              <p><strong>User ID:</strong> <%= cart.userId %></p>
+              <p><strong>Payment Method:</strong> <%= cart.paymentMethod %></p>
+              <ul>
+                <% cart.items.forEach(({ product, quantity }) => { %>
+                  <li><%= product?.title || 'Deleted Product' %> - <%= quantity %> pcs</li>
+                <% }) %>
+              </ul>
+            </div>
+            <img src="<%= cart.paymentScreenshot %>" class="confirmation-img" alt="Payment Screenshot">
+          </div>
+        <% } %>
+      <% }) %>
+    </div>
+
+  </div>
+</body>
+</html>

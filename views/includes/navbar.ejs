@@ -1,0 +1,113 @@
+<nav class="navbar bg-white shadow-sm sticky-top py-3">
+  <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap">
+
+    <!-- Left Section (Only visible on md and above) -->
+    <div class="d-none d-md-flex align-items-center gap-3">
+      <a class="nav-link fw-bold text-dark d-flex align-items-center hover-underline" href="/">
+        <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="20" height="20" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M3 9.75L12 3l9 6.75M4.5 10.5v9a1.5 1.5 0 001.5 1.5H9v-6h6v6h3a1.5 1.5 0 001.5-1.5v-9" />
+        </svg>
+        Home
+      </a>
+
+      <div id="title">
+        <h6 class="m-0 text-success fw-semibold hover-underline" id="magicTitle">Why Wait? Get It Now</h6>
+      </div>
+    </div>
+
+    <!-- Center Section: Brand (Always visible) -->
+    <div class="text-center flex-grow-1">
+      <a class="navbar-brand fw-bold fs-3 text-success d-block" href="/">Groozie...</a>
+      <p class="text-success d-none d-md-block small">Groceries at Your Door in 10 Min</p>
+    </div>
+
+    <!-- Right Section -->
+    <div class="d-flex align-items-center gap-3">
+
+      <!-- Delivery Location (Hide on small screens) -->
+      <% if (!admin) { %>
+        <div class="d-none d-md-flex flex-column align-items-end text-end">
+          <small class="text-muted">Delivering to</small>
+          <div class="d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="18" height="18" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M12 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5zM19.5 10.5c0 6-7.5 11.25-7.5 11.25S4.5 16.5 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            <span class="fw-semibold">
+              <%= user && user.address ? user.address : "India" %>
+            </span>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Cart Button (only if user is logged in and not admin) -->
+      <% if (user && !admin) { %>
+        <a class="btn btn-outline-success d-flex align-items-center" href="/cart">
+          🛒 My Cart
+        </a>
+      <% } %>
+
+      <!-- Account Dropdown -->
+      <% if (user) { %>
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle text-dark d-flex align-items-center" href="#" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="20" height="20" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M5.25 20.25v-1.5A4.5 4.5 0 019.75 14.25h4.5a4.5 4.5 0 014.5 4.5v1.5M12 11.25a3 3 0 100-6 3 3 0 000 6z" />
+            </svg>
+            Account
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item">Hello, <%= user.name %></a></li>
+            <li><a class="dropdown-item" href="#">My Orders</a></li>
+            <li><a class="dropdown-item" href="#">Phone: +91-<%= user.phone %></a></li>
+            <li><a class="dropdown-item" href="#">Address: <%= user.address %></a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="/user/logout">Logout</a></li>
+          </ul>
+        </div>
+      <% } else if (admin) { %>
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle text-dark d-flex align-items-center" href="#" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="20" height="20" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M5.25 20.25v-1.5A4.5 4.5 0 019.75 14.25h4.5a4.5 4.5 0 014.5 4.5v1.5M12 11.25a3 3 0 100-6 3 3 0 000 6z" />
+            </svg>
+            Admin
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item">Admin: <%= admin.email %></a></li>
+            <li><a class="dropdown-item" href="/admin/add-product">Add Product</a></li>
+            <li><a class="dropdown-item" href="/admin/dashboard">Admin Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="/admin/logout">Logout</a></li>
+          </ul>
+        </div>
+      <% } else { %>
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle text-dark d-flex align-items-center" href="#" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="20" height="20" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                d="M5.25 20.25v-1.5A4.5 4.5 0 019.75 14.25h4.5a4.5 4.5 0 014.5 4.5v1.5M12 11.25a3 3 0 100-6 3 3 0 000 6z" />
+            </svg>
+            Account
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item text-success" href="/user/signup">Sign Up</a></li>
+            <li><a class="dropdown-item text-success" href="/user/login">User Login</a></li>
+            <li><a class="dropdown-item text-success" href="/admin/login">Admin Login</a></li>
+          </ul>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</nav>

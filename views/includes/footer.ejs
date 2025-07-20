@@ -1,0 +1,51 @@
+<% function slugify(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+} %>
+
+<footer class="footer">
+  <div class="footer-container">
+
+    <!-- Top Section -->
+    <div class="top-footer">
+      <div class="about">
+        <h3 class="hover-underline">About Us</h3>
+        <p>We deliver daily groceries and essentials fresh, fast, and with care. Trusted by thousands of households for quality service.</p>
+      </div>
+      <div class="social-media">
+        <h3 class="hover-underline">Follow Us</h3>
+        <div class="social-icons">
+          <a href="" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/kishan_n_09/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://x.com/T2_c0de" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.youtube.com/" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Full Width Categories Section -->
+  <div class="full-width-categories">
+    <h3 class="hover-underline">Categories</h3>
+    <div class="category-columns">
+      <% const footerCategories = [
+        "Rice, Atta & Dal", "Oil & Ghee", "Masala & Spices", "Festive & Gifting", "Beverages", "Personal Care", "Home Essentials & Cleaning",
+        "Pooja Essentials", "Baby & Hygiene", "Meat & Eggs", "Pet Supplies", "Bakery & Desserts", "Sauces & Spreads", "Dry Fruits & Nuts",
+        "Pickles & Pastes", "Fruits & Vegetables", "Dairy & Bakery", "Snacks & Packaged Food", "Mouth fresheners", "Toffies And Chocolates"
+      ];
+
+      for (let i = 0; i < footerCategories.length; i += 7) { %>
+        <ul>
+          <% footerCategories.slice(i, i + 7).forEach(cat => { %>
+            <li><a href="/category/<%= slugify(cat) %>"><%= cat %></a></li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <p>© 2025 YourGroceryApp. All rights reserved.</p>
+  </div>
+</footer>

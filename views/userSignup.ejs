@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head', { title: 'User Signup' }) %>
+
+    <body>
+        <div class="auth-page">
+            <div class="container">
+                <form class="auth-form" action="/user/signup" method="POST">
+                    <h2>User Signup</h2>
+                    <input type="text" name="name" placeholder="Full Name" required>
+                    <input type="email" name="email" placeholder="Email Address" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="text" name="address" placeholder="Full Address" required>
+                    <input type="text" name="phone" id="phone" placeholder="Enter phone number" required>
+
+
+                    <button type="submit">Sign Up</button>
+                    <p class="switch-link">Already have an account? <a href="/user/login">Login</a></p>
+                </form>
+            </div>
+        </div>
+    </body>
+
+</html>

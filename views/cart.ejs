@@ -1,0 +1,269 @@
+<% layout("/layouts/boilerplate") %>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+  .cart-item {
+  border-radius: 12px;
+  box-shadow: none !important; /* Remove shadow */
+  transition: none !important; /* Prevent animation */
+  transform: none !important;
+}
+
+.cart-item:hover {
+  box-shadow: none !important; /* Remove hover shadow */
+  transform: none !important;
+  background-color: inherit !important; /* Optional: prevent bg highlight */
+}
+
+
+  .qty-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    text-align: center;
+    padding: 0;
+    line-height: 1;
+    transition: 0.3s;
+  }
+
+  .qty-btn:hover {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+  }
+
+  .qty-number {
+    min-width: 20px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+ .empty-cart {
+  text-align: center;
+  
+}
+
+.empty-cart img {
+  max-width: 320px;
+  width: 100%;
+  
+}
+
+.empty-cart h5 {
+  font-weight: bold;
+  
+  color: #198754;
+}
+
+.empty-cart p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+  .payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .payment-option {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+  }
+
+  .payment-option:hover {
+    background-color: #e9f7ef;
+  }
+  .billing-summary {
+  border-radius: 12px;
+  box-shadow: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+.billing-summary:hover {
+  box-shadow: none !important;
+  transform: none !important;
+  background-color: inherit !important;
+}
+
+</style>
+
+<%
+  let totalQty = 0;
+  cart.items.forEach(i => totalQty += i.quantity);
+%>
+
+<div class="container my-5" id="cart-container">
+  <% if (cart.items.length === 1) { %>
+    <!-- Empty Cart View -->
+    <div class="empty-cart">
+      <img src="/images/empty-cart.webp" alt="Empty Cart">
+      <h5>Your Cart is Empty</h5>
+      <p>Looks like you haven’t added anything yet.</p>
+      <a href="/" class="btn btn-success mt-3">Continue Shopping</a>
+    </div>
+  <% } else { %>
+    <div class="row">
+      <!-- Cart Items -->
+      <div class="col-md-8">
+        <h4 class="fw-bold mb-4">My Cart (<%= totalQty %> items)</h4>
+
+        <% cart.items.forEach(({ product, quantity }) => { if (!product) return; %>
+          <div class="card mb-3 cart-item shadow-sm">
+            <div class="row g-0 align-items-center">
+              <div class="col-md-3 text-center">
+                <img src="<%= product.imageUrl || '/images/default.jpg' %>" class="img-fluid p-2" style="max-height: 100px; object-fit: contain;">
+              </div>
+              <div class="col-md-6">
+                <div class="card-body">
+                  <h5 class="card-title mb-1"><%= product.title %></h5>
+                  <p class="text-muted mb-1 small"><%= quantity + " unit" + (quantity > 1 ? "s" : "") %></p>
+                  <p class="mb-1">
+                    <strong class="text-success">₹<%= product.discountPrice || product.price %></strong>
+                    <% if (product.discountPrice) { %>
+                      <del class="text-muted small ms-2">₹<%= product.price %></del>
+                    <% } %>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-3 text-end pe-4">
+                <form action="/cart/update-quantity" method="POST" class="d-flex align-items-center gap-2">
+                  <input type="hidden" name="productId" value="<%= product._id %>">
+                  <button name="action" value="decrease" class="qty-btn">−</button>
+                  <span class="qty-number"><%= quantity %></span>
+                  <button name="action" value="increase" class="qty-btn">+</button>
+                </form>
+                <form action="/cart/remove-item" method="POST" class="mt-2">
+                  <input type="hidden" name="productId" value="<%= product._id %>">
+                  <button class="btn btn-sm btn-outline-danger w-100">Remove</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Billing Summary -->
+      <div class="col-md-4">
+        <div class="card billing-summary p-3">
+          <%
+            let total = 0;
+            cart.items.forEach(({ product, quantity }) => {
+              if (product) total += (product.discountPrice || product.price) * quantity;
+            });
+
+            let cashCharge = cart.paymentMethod === 'Cash' ? 10 : 0;
+            let grandTotal = total > 0 ? total + 4 + cashCharge : 0;
+          %>
+
+          <h5 class="mb-3">PRICE DETAILS</h5>
+          <hr class="mb-2">
+
+          <div class="d-flex justify-content-between">
+            <span>Price (<%= totalQty %> items)</span>
+            <span>₹<%= total %></span>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>Delivery Charges</span>
+            <span class="text-success">FREE</span>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>Handling Fee</span>
+            <span>₹4</span>
+          </div>
+
+          <% if (cashCharge > 0) { %>
+            <div class="d-flex justify-content-between">
+              <span>Cash Payment Charge</span>
+              <span>₹<%= cashCharge %></span>
+            </div>
+          <% } %>
+
+          <hr class="my-2">
+
+          <div class="d-flex justify-content-between fw-bold">
+            <span>Total Amount</span>
+            <span>₹<%= grandTotal %></span>
+          </div>
+
+          <!-- Promo -->
+          <form method="POST" action="/cart/apply-coupon" class="mt-4">
+            <label for="promo" class="form-label small fw-bold">Apply Promo Code</label>
+            <div class="input-group input-group-sm">
+              <input type="text" name="promo" id="promo" class="form-control" placeholder="Enter code">
+              <button class="btn btn-outline-success" type="submit">Apply</button>
+            </div>
+          </form>
+
+          <!-- Estimated Delivery -->
+          <div class="bg-white border rounded mt-4 p-3">
+            <h6 class="fw-bold mb-2 text-success">Estimated Delivery</h6>
+            <div class="small text-muted">Delivering to your location within <strong>30 minutes</strong>.</div>
+          </div>
+
+          <!-- Secure Checkout -->
+          <div class="bg-light rounded mt-4 p-3">
+            <h6 class="text-success fw-bold mb-2">Safe & Secure Checkout</h6>
+            <div class="d-flex flex-column gap-2 small">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-shield-check text-success fs-5"></i>
+                <span>100% Secure Payments via Razorpay</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-truck text-success fs-5"></i>
+                <span>Guaranteed Delivery or Refund</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history text-success fs-5"></i>
+                <span>Easy returns within 24 hours</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Banner -->
+          <div class="bg-success-subtle text-success-emphasis text-center small rounded py-2 px-3 mt-4 fw-semibold">
+            Groozie ensures fresh groceries or instant refund — no questions asked!
+          </div>
+
+          <!-- Payment Method -->
+          <h6 class="mt-4">Select Payment</h6>
+          <form class="payment-methods" onsubmit="showQR(event)">
+            <div class="d-grid gap-2">
+              <% ['PhonePe', 'GPay', 'AmazonPay', 'Cash'].forEach(method => { %>
+                <div class="form-check border rounded p-2">
+                  <input class="form-check-input me-2" type="radio" name="method" value="<%= method %>" id="method_<%= method %>" <%= cart.paymentMethod === method ? 'checked' : '' %> >
+                  <label class="form-check-label w-100" for="method_<%= method %>">
+                    <strong><%= method %></strong> <% if (method === 'Cash') { %><span class="text-muted">(₹10 extra)</span><% } %>
+                  </label>
+                </div>
+              <% }) %>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm w-100 mt-3">Confirm Payment</button>
+          </form>
+
+          <div class="text-muted small mt-3">
+            Orders cannot be cancelled once packed for delivery. Refunds may apply for delays.
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  function showQR(e) {
+    e.preventDefault();
+    alert("QR code modal will show here.");
+  }
+</script>
